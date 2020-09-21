@@ -1,0 +1,98 @@
+---
+title: "Homework 1"
+author: "Weslley dos Santos Silva"
+output:
+  html_document: default
+---
+
+```{r install,echo=FALSE, include=FALSE}
+library(knitr)
+library(rmarkdown)
+library(ggplot2)
+setwd(getwd())
+```
+
+```{r setup, include=FALSE}
+# GLOBAL OPTIONS: essas funções atribuem a todos os chunks o que for setado na função $set(), por exemplo os seguintes argumentos:
+#include= TRUE/FALSE -> determina se o código feito dentro do chunk vai ser incluido no arquivo de output
+#echo = TRUE/FALSE -> determina se uma linha contendo o código/cálculo que gerou aquele output/resultado sera incluído em uma linha  do arquivo de output 
+knitr::opts_chunk$set(echo = TRUE)
+```
+1) Faça algumas operações matemáticas com os operadores listados na aula_1. Escolha pelo menos três operadores distintos. Faça também 3 combinações distintas entre os operadores.  
+```{r}
+1-2
+7%/%2
+97+3
+(2020^2)-1000*(0.8)
+10000^((15*4)%%6)
+13^2 + 52 - log(10)
+```
+2) Suponha que um pesquisador tenha criado o pacote chamado UFSCar. Que comando você utilizaria para instalar tal pacote?
+```{r}
+#install.packages(UFSCar)
+```
+Que comando você utilizaria para carregar tal pacote?
+```{r}
+#library(UFSCar)
+```
+Suponha que dentro deste pacote UFSCar tenha a função Sorocaba. Como você acabou de instalar este pacote, ainda não está familiarizado com os termos desta nova função. Como você poderia descobrir como utilizar este comando dentro do R?
+```{r}
+#?sorocaba
+#help(sorocaba)
+```
+E fora do R?  
+Procuraria a documentação do pacote no site da linguagme R uma vez que para a deposição de um novo pacote é necessário documentar todo o projeto. Existem sites especializados e indicados pelas documentações do R CRAN, incluindo search.r-project.org e Rseek.org .  
+
+3) Como é possı́vel criar um chunk de código no R markdown? Quais as opções para usar knit? (Faça uma pesquisa para responder essa questão, ou use o card Rmarkdown disponibilizado no AVA).  
+
+Um chunk interpretável é criado utilizando \```{r} no começo e terminando com ```, é possível utilizar o botão no topo da paǵina de 'insert' para inserir chunks ou blocos de códigos de diferentes linguagens.  
+Há três caminhos para se fazer um kinit: Pela barra de ferramentas no caminho File> kinit document; Pelo botão de atalho no topo da página; Utilizando a função render() do rMarkdown por linha de comando.  
+
+4) Teste qual a diferença entre criar um vetor usando a função c() e c(””).
+```{r}
+vetor = c(1,2,3,4,5,6)
+vetor
+vetoraspas = c("1,2,3,4,5,6")
+vetoraspas
+```
+5) Crie um vetor de todos números inteiros maiores do que 1 e menores do que 1000. Em seguida, crie um vetor com as mesmas caracterı́sticas, contudo apenas números pares. Dica: obviamente não espero que você digite elemento por elemento.
+```{r}
+vetor= 1:999
+vetor
+
+vetor= seq(from=2,to=999,by=2)
+vetor
+```
+
+6) Calcule o número de ouro no R.
+```{r}
+(1+sqrt(5))/2
+```
+7) Qual o resultado da divisão de 1 por 0 no R? E de -1 por 0?
+```{r}
+1/0
+-1/0
+```
+8) Verifique quais as diferenças entre NaN, NULL, NA e Inf? Digite expressões que retornem cada um desses resultados.
+```{r}
+# NaN (Not a Number) representa indefinições matemáticas
+0/0
+
+# NULL representa a ausência de informação,está em sintonia com comportamentos de lógica de programação
+
+# NA (Not Available) significa dado faltante/indisponível.
+as.numeric(c("1", "2", "a"))
+
+# Inf (Infinito) é um número muito grande ou o limite matemático
+1/0
+
+```
+
+9) Verifique o que retorna a expressão 5 + 3 * 10 %/%3 == 15 retorna no R. Faça a expressão retornar o valor contrário apenas usando parênteses - ou seja, se a expressão retornar originariamente TRUE, faça retornar FALSE. Explique o que faz a expressão original.  
+A primeira expressão tem um teste de lógica, comparando o resultado da conta da esquerda com o número da direita do operador de igualdade. Sendo "14 == 15" o resultado é FALSE.
+```{r}
+5 + 3 * 10 %/%3 == 15
+
+5 + (3 * 10) %/%3 == 15
+```
+

@@ -1,0 +1,128 @@
+---
+title: "Homework 2"
+author: "Weslley dos Santos Silva"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r,echo=FALSE, include=TRUE}
+setwd(getwd())
+library(ggplot2)
+#library(datasets) #Essa biblioteca possuí vários conjuntos de dados dispíveis e que podem ser usados para analises e testes
+
+#Outra opção para carregar conjunto de dados sem inciar a biblioteca é:
+# data(NomeDoConjunto)
+#data(USArrests)
+
+color = c('#F9C80E','#f86624','#EA3546','#A83271','#662E9B','#5575B4','#43BCCD')
+```
+# Questão 1
+
+## Histogramas
+```{r,echo=TRUE, include=TRUE}
+#Assassinatos
+ggplot(data = USArrests) +
+  geom_histogram(aes(x = Murder),fill =color[1],color='black',bins=15) + 
+  labs(y = "Frequência", x = "Assasinatos")
+#Assaltos
+ggplot(data = USArrests) + 
+  geom_histogram(aes(x = Assault),fill=color[2],color='black',bins=15) +
+  labs(y = "Frequência", x = "Assaltos")
+#População Urbana
+ggplot(data = USArrests) + 
+  geom_histogram(aes(x = UrbanPop),fill=color[3],color='black',bins=15) +
+  labs(y = "Frequência", x = "População Urbana")
+#Estupro
+ggplot(data = USArrests) + 
+  geom_histogram(aes(x = Rape), fill =color[4],color='black',bins=15) +
+  labs(y = "Frequência", x = "Estupro")
+```
+
+## Box-Plots
+```{r,echo=TRUE, include=TRUE}
+ggplot(data = USArrests) + geom_boxplot(aes(x=1, y=Murder),fill =color[1],color='black')
+ggplot(data = USArrests) + geom_boxplot(aes(x=1, y=Assault),fill=color[2],color='black')
+ggplot(data = USArrests) + geom_boxplot(aes(x=1, y=UrbanPop),fill=color[3],color='black')
+ggplot(data = USArrests) + geom_boxplot(aes(x=1, y=Rape),fill=color[4],color='black')
+```
+
+# Questões 2
+
+No gráfico abiaixo analisando a relação Estupro X Assasinatos podemos notar que existe uma correlação postiva entre os casos mas de intensidade fraca. A relação das variáveis portanto talvez sejam muito mais relacionadas ao aumento de violência geral do que a afirmação que estupros são seguidos por assaninatos.  
+```{r}
+data(USArrests)
+ggplot(USArrests,aes(x=Murder, y=Rape))+
+  geom_point(color="darkmagenta")+
+  geom_smooth(se=T, method = "lm", color="black")+
+  labs(x = "Assasinatos", y = "Estupros", title = "Probabilidade de estupro seguido de assasinato")
+```
+  
+No gráfico abaixo analisando também relação Assaltos X Estupro o raciocínio permanece o mesmo, apesar dos casos apresentarem uma correlação postiva, encontramos muitos casos dispersos, ou seja uma inttensidade fraca na correlação.  
+```{r}
+data(USArrests)
+ggplot(USArrests,aes(x=Assault, y=Rape))+
+  geom_point(color="darkorange")+
+  geom_smooth(se=T, method = "lm", color="black")+
+  labs(x = "Assaltos", y = "Estupros", title = "Probabilidade de assaltos serem seguidos de estupro")
+```
+
+# Questão 3
+
+O conjunto de dados "diamonds" apresenta valores de preços, dos formatos e categorias de diamantes. Podemos ver podemos ver que nesse conjunto a maioria dos preços se encontram menores que 5 mil dólares.  
+```{r}
+ggplot(diamonds, aes(price)) +
+geom_histogram(fill="darkred", bins = 10) +
+theme_light() +
+labs(x= "Preço em dólares", y = "Frequência", title = "Frequência dos preços") 
+```
+  
+Analisando os cortes tipos de cortes feitos nos diamantes podemos ver que a grande maioria é feita com cortes de alta qualidade.  
+```{r}
+ggplot(diamonds, aes(x = cut)) +
+  geom_bar(fill="darkred")+
+  theme_light() +
+  labs(x="Tipo de corte", y ="Quantidade", title = "Diamantes por tipo de corte")
+```
+  
+Mas não é posssível destacar o tipo de corte como um parametro para o preço dos diamantes, uma ve que estes possuem muitos outlier, demonstrado pela altura que os graficos com base nos cortes chegam e todos muito próximos do mesmo valor máximo.  
+```{r}
+data(diamonds)
+ggplot(diamonds, aes(x = cut, y = price)) +
+  geom_violin(fill="darkred",alpha=0.4, color="darkred")+
+  theme_light() +
+  labs(x= "Tipo de Corte", y = "Preço em dólares", title = "Distribuição do valor de diamantes por corte")
+```
+
+Ainda sobre a distribuição das informações do conjunto de dados, os diamantes anotados nele apresentam uma variedade de característica muito grande e quase que homogeneidade em suas concentrações de dados. É possível notar que poucos são anotados como diamantes de baixa claridade/tansparência ou com alta qualidade mas com cortes de baixa qualidade, demonstrando o refinamento do comércio.  
+```{r}
+ggplot(diamonds, aes(x=cut,y=clarity)) +
+  geom_jitter(size=.5, color="darkred") +
+  theme_light()+
+  labs(x= "Tipo de Corte", y = "Claridade/transparência", title = "Classificação dos diamantes")
+```
+
+# Questão 4
+
+Com base no gráfico abaixo podemos afirmar que há uma relação positiva entre o peso do diamante e seu preço, apesar do conjunto de dados trazer uma variação muito grande dos preços dos diamante por conta de suas características de pureza e corte além da relação peso-preço, tornando os dados muito dispersos.  
+```{r}
+data(diamonds)
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point(size=.5,color="darkred")+
+  geom_smooth(se=F, method = "lm", color="black")+
+  theme_light() +
+  labs(x= "Peso", y = "Preço em dólares", title = "Valor de diamantes por peso")
+```
+
+Por sua vez quando analisamos o percentual de profundidade que relaciona as 3 medidas tridimensionais de um diamante e seu preço nós não encontramos essa correlação estabelecida, nem mesmo de uma forma fraca. temos uma concentração dos diamantes em um percentual e por sua vez os valores variando por todo o gráfico.  
+```{r}
+ggplot(diamonds, aes(x = depth, y = price)) +
+  geom_point(color='darkred', size=.5)+
+  geom_smooth(se=F, method = "lm", color="black")+
+  theme_light() +
+labs(x= "Percentual de profundidade", y = "Preço", title = "Relação entre formato/tamanho 3D e preço") 
+```
+

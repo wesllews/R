@@ -1,0 +1,218 @@
+---
+title: "Homework 3"
+author: "Weslley dos Santos Silva"
+output:
+  html_document: default
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r,echo=FALSE, include=TRUE}
+#install.packages("ggrepel")
+library(ggplot2)
+library(ggrepel)
+setwd(getwd())
+data(mpg)
+```
+
+# Questão 1
+O comando `ggplot(data=mpg)` cria um quadro vazio que na verdade representam eixos de coordenadas onde seram adicionados os elementos gráficos por camada.Carrega também os dados do dataset "mpg" na função ggplot(), uma vez que um conjunto de dados é o primeiro parametro da função.
+
+# Questão 2
+- manufacturer: são as fabricantes de automóveis.
+- model: é nome do modelo do carro.
+- displ: são as cilindradas/tamanho do motor do carro em litros.
+- year: ano de fabricação do carro.
+- cyl: número de cilindros do motor.
+- trans: é o tipo de cambio/direção do carro do carro,automatico ou manual, de forma versionada.
+- drv: é o tipo de tração do carro, podendo ser (F) frontal, (R) traseira e (4) 4x4.
+- cty: é a eficiência do carro na cidade, milhas X galão de combustível.
+- chwy: é a eficiência do carro na estrada, milhas X galão de combustível.
+- fl: tipo de combunstível.
+- class: tipo de carro. SUV, Compacto, subcompacto, médio e etc.  
+
+```{r}
+data(mpg)
+
+head(mpg) #primeiras seis linhas do banco de dados
+tail(mpg) #últimas seis linhas do banco de dados
+summary(mpg)# resume as variáveis numéricas em minímos, maximos e médias.
+names(mpg) #Dá o nome das colunas explicadas acima.
+```
+
+# Questão 3
+Com o gráfico de dispersão entre a eficiência do motor na estrada (hwy) e o número de cilindros do motor(cyl) podemos ver que há uma variação muito grande da eficiência conforme a classe do veículo, mas ainda assim de forma geral seguem um linearidade negativa, ou seja, quanto maior o número de cilindros menor é a eficiência na estrada.
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping =aes(x=cyl, y=hwy, color=class))+
+  theme_light()
+```
+
+# Questão 4
+
+Assim como o gráfico anterior podemos ver que a eficência do motor na cidade apresenta relação negativa, quanto maior o número de cilindro menor a eficiência. Podemos destacar ainda além das variações por classes que a eficiência dos automóveis em trajeto urbano, cidades, é relativamente menor do que a eficiência em estrada, um fenôme já conhecido popularmente.
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=cyl, y=cty, color=class))+
+  theme_light()
+```
+
+Analisando a relação entre a eficiência na estrada comparada com a eficiência na cidade podemos concluir que existe uma relação positiva entre as variáveis. Portanto, quanto maior a eficiência do veículo na cidade, maior a eficiênica na estrada.
+```{r}
+ggplot(data=mpg,mapping=aes(x=hwy, y=cty, color=class))+
+  geom_point()+
+  geom_smooth(se=T, method = "lm", color="black")+
+  theme_light()
+```
+
+# Questão 5
+```{r}
+library(gridExtra)
+h1 = ggplot(data = mpg) +
+      geom_histogram(aes(x = displ),fill="darkgreen",color='black') +
+      theme_light()+
+      labs(y = "Frequência", x = "Tamanho do motor (L)", title="Tamanho dos motores")
+
+h2 = ggplot(data = mpg) +
+      geom_histogram(aes(x = cty),fill="darkblue",color='black') +
+      theme_light()+
+      labs(y = "Frequência", x = "Eficiência do motor (Milhar/Galão)", title="Eficiência dos motores na cidade")
+
+b1 = ggplot(data =mpg) +
+      geom_boxplot(aes(x=1, y=displ),fill="darkgreen",color='black')+
+      theme_light()+
+      labs(x= "", y = "Tamanho do motor (L)", title="Tamanho dos motores")
+
+b2 = ggplot(data =mpg) +
+      geom_boxplot(aes(x=1, y=cty),fill="darkblue",color='black')+
+      theme_light()+
+      labs(x= "", y = "Eficiência do motor (Milhar/Galão)", title="Eficiência dos motores na cidade")
+grid.arrange(h1, h2, b1, b2, ncol=2)
+```
+
+# Questão 6
+A)
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color=class)) + 
+  facet_wrap(~ class, nrow = 2)
+```
+B)
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color=drv)) + 
+  facet_wrap(drv~class, nrow = 2)
+```
+
+C)Ao classificar os dados por color e facet ao mesmo tempo a utilização de cor se torna pouco necessária uma vez que os dados já se encontram visualmente separado em nos "quadrantes" do facet. Em minha opinião o facet nos dá a possibilidade de avaliaçãoo mais individualista/categorica dos dados, quando se quer visualizar com detalhes o comportamento em uma determinada categoria, como no caso dos cilindros. Já as cores contribuem muito mais para uma visão generalista dos dados, em uma comparação global, como o caso do gráfico de dispersão não separado em facets.
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color=cyl)) + 
+  facet_wrap(. ~ cyl, nrow = 2)
+```
+
+# Questão 7
+## A)
+```{r}
+library(readxl)
+homework3 = read_excel("homework3.xlsx")
+
+#Convertendo os valores pra double
+homework3$CPI =  as.double(homework3$CPI)
+homework3$HDI =  as.double(homework3$HDI)
+
+#Ajustando o nome dos locais iguais os do exemplo:
+homework3$Region <- factor(homework3$Region,
+                     levels = c("EU W. Europe",
+                                "Americas",
+                                "Asia Pacific",
+                                "East EU Cemt Asia",
+                                "MENA",
+                                "SSA"),
+                     labels = c("OECD",
+                                "Americas",
+                                "Asia &\nOceania",
+                                "Central &\nEastern Europe",
+                                "Middle East &\nnorth Africa",
+                                "Sub-Saharan\nAfrica"))
+
+ggplot(data = homework3, mapping = aes(x=CPI, y=HDI)) + 
+  geom_point(color="red")+
+  theme_light()
+  
+```
+
+## B)
+```{r}
+ggplot(data = homework3, mapping = aes(x=CPI, y=HDI, color=Region)) + 
+  geom_point()+
+  theme_light()
+```
+
+## C)
+```{r}
+ggplot(data = homework3, mapping = aes(x=CPI, y=HDI, color=Region)) + 
+  geom_point(size=3)+
+  theme_light()
+```
+
+## D) 
+```{r}
+ggplot(data = homework3, mapping = aes(x=CPI, y=HDI, color=Region, size=HDI)) + 
+  geom_point()+
+  theme_light()
+```
+
+## E)
+```{r}
+ggplot(data = homework3, mapping = aes(x=CPI, y=HDI, color=Region, size=HDI)) + 
+  geom_point()+
+  theme_light()+
+  labs(x = "Índice de Percepção da Corrupção(CPI)", y = "Índice de Desenvolvimento Humano(HDI)", title ="Desenvolvimento Econômico por países" )
+```
+
+## F)
+```{r}
+#Anotando apenas o nome dos países explicitos no gráfico:
+paises = c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan","Afghanistan", "Congo", "Greece", "Argentina", "Brazil","India", "Italy", "China", "South Africa", "Spane","Botswana", "Cape Verde", "Bhutan", "Rwanda", "France","United States", "Germany", "Britain", "Barbados", "Norway","Japan","New Zealand", "Singapore")
+paises_2<- c("Russia","Brazil","Spain","Germany", "Japan","China","South Africa")
+
+#Definindo paleta de cores
+cores = c("#24576D", "#099DD7", "#28AADC", "#248E84", "#F2583F", "#96503F")
+
+#Plottando o Gráfico
+plot3 = ggplot(data = homework3, mapping = aes(x=CPI, y=HDI, color=Region))
+
+  #Linha Vermelha, imprimindo no "linetype" a legenda do r2
+  plot3 = plot3 +  geom_smooth(mapping=aes(linetype="R2=56%"), method = "lm", formula = y~log(x), se = FALSE, color = "red")+
+  #Tamanho e formato dos círculos
+  geom_point(shape=21,size=3,fill="white",stroke=1.5)+
+  #Adicionando texto aos círculos
+  geom_text_repel(data=homework3[homework3$Country %in% paises,], mapping=aes(label=Country), color="gray20")+
+  geom_text_repel(data=homework3[homework3$Country %in% paises_2,], mapping=aes(label=Country), box.padding = unit(1.75, 'lines'), color="gray20")+
+  #Adicionando os labels dos eixos
+  labs(x = "Corruption Perceptions Index, 2011 (10=least corrupt)", y = "Human Development Index, 2011 (1=best)", title ="Corruption and Human Development" )+
+  #Melhorando a escala numérica dos dados nos eixos
+  scale_x_continuous(name = "Corruption Perceptions Index, 2011 (10=least corrupt)", limits = c(.9, 10.5), breaks = 1:10) +
+  scale_y_continuous(name = "Human Development Index, 2011 (1=Best)", limits = c(0.2, 1.0), breaks = seq(0.2, 1.0, by = 0.1)) +
+  #Trocando a paleta de cores de forma manual
+  scale_color_manual(name = "", values = cores) +
+  #tema básico
+  theme_minimal()
+  
+ plot3 + theme(
+   plot.title = element_text(size =16, face = "bold"),
+   legend.position="top",
+   legend.box = "horizontal",
+   legend.spacing.x = unit(0.7, 'pt'),
+   legend.justification = "left",
+   legend.title = element_blank(),
+   legend.text = element_text(size=10),
+   panel.grid.major = element_line(color = "gray50", size = 0.5),
+   panel.grid.minor = element_blank(),
+   panel.grid.major.x = element_blank(),
+   panel.background = element_blank(),
+   line = element_blank()) +  guides(col = guide_legend(nrow = 1))
+```
